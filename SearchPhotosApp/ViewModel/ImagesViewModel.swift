@@ -2,9 +2,8 @@
 //  ImagesCellViewModel.swift
 //  SearchPhotosApp
 //
-//  Created by Vaishnavi Rathod on 17/10/22.
+//  Created by Vaishnavi Rathod on 02/11/22.
 //
-
 import Foundation
 import UIKit
 

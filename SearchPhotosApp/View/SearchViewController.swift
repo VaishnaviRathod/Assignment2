@@ -2,33 +2,36 @@
 //  ViewController.swift
 //  SearchPhotosApp
 //
-//  Created by Vaishnavi Rathod on 13/10/22.
+//  Created by Vaishnavi Rathod on 01/11/22.
 //
 
 import UIKit
 
 class SearchViewController: UIViewController {
     
+    //MARK:- Elements
     @IBOutlet weak var collectionViewPhotos: UICollectionView!
     @IBOutlet var viewNoRecord: UIView!
-    
-   
-    var cellId = "SearchCellView"
     let searchController = UISearchController(searchResultsController: nil)
     
+    //MARK:- variables
+    var cellId = "SearchCellView"
     var photosViewModel :SearchViewModel!
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
         photosViewModel = SearchViewModel(apiManager: APIManager())
-        //apiCall()
+        self.photosViewModel.getPhotosBySearch( searchText: "dogs")
         self.setupSearchController()
         
         self.handleApiErrorResponse()
         self.handleApiSuccessResponse()
-
+        
+        searchController.searchBar.compatibleSearchTextField.backgroundColor = .white
+        searchController.searchBar.tintColor = .white
     }
+    
+   
     
     func setupSearchController() {
         searchController.searchResultsUpdater = self
@@ -68,7 +71,7 @@ class SearchViewController: UIViewController {
     }
     
     func fetchPhotos(_ text:String) {
-        
+        print(text)
         var pendingRequestWorkItem: DispatchWorkItem?
         pendingRequestWorkItem?.cancel()
         let requestWorkItem = DispatchWorkItem { [weak self] in
@@ -81,28 +84,6 @@ class SearchViewController: UIViewController {
                                       execute: requestWorkItem)
     }
 
-    /*func apiCall () {
-        guard let url = URL(string: "https://api.imgur.com/3/gallery/search/?q=dogs"),
-            let payload = "{\"Authorization\": \"4442d2bb442f675\"}".data(using: .utf8) else
-        {
-            return
-        }
-
-        var request = URLRequest(url: url)
-        request.httpMethod = "GET"
-        request.addValue("Client-ID 4442d2bb442f675", forHTTPHeaderField: "Authorization")
-        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        
-        URLSession.shared.dataTask(with: request) { (data, response, error) in
-            guard error == nil else { print(error!.localizedDescription); return }
-            guard let data = data else { print("Empty data"); return }
-
-            if let str = String(data: data, encoding: .utf8) {
-                print(str)
-            }
-        }.resume()
-    }*/
-
 }
 //MARK:- UISearchResultsUpdating, UISearchControllerDelegate
 extension SearchViewController: UISearchResultsUpdating,UISearchControllerDelegate {
@@ -111,10 +92,51 @@ extension SearchViewController: UISearchResultsUpdating,UISearchControllerDelega
         if let searchText = searchController.searchBar.text {
             if searchText.isEmpty == false {
                 fetchPhotos(searchText)
+            } else {
+                self.photosViewModel.getPhotosBySearch( searchText: "dogs")
+                self.handleApiErrorResponse()
+                self.handleApiSuccessResponse()
+                collectionViewPhotos.scrollToItem(at: IndexPath(item: 0, section: 0), at: .top, animated: false)
             }
         }
     }
+    
+    func searchBarCancelButtonClicked(searchBar: UISearchBar) {
+            searchBar.text = nil
+            searchBar.showsCancelButton = false
+
+            searchBar.endEditing(true)
+
+            self.photosViewModel.getPhotosBySearch( searchText: "dogs")
+            self.handleApiErrorResponse()
+            self.handleApiSuccessResponse()
+            
+        }
 }
+
+//MARK:- UISearchBar
+extension UISearchBar {
+
+    // Due to searchTextField property who available iOS 13 only, extend this property for iOS 13 previous version compatibility
+    var compatibleSearchTextField: UITextField {
+        guard #available(iOS 13.0, *) else { return legacySearchField }
+        return self.searchTextField
+    }
+
+    private var legacySearchField: UITextField {
+        if let textField = self.subviews.first?.subviews.last as? UITextField {
+            // Xcode 11 previous environment
+            return textField
+        } else if let textField = self.value(forKey: "searchField") as? UITextField {
+            // Xcode 11 run in iOS 13 previous devices
+            return textField
+        } else {
+            // exception condition or error handler in here
+            return UITextField()
+        }
+    }
+}
+
 //MARK:- UICollectionViewDataSource,UICollectionViewDelegate
 extension SearchViewController : UICollectionViewDataSource,UICollectionViewDelegate {
     
@@ -141,6 +163,6 @@ extension SearchViewController : UICollectionViewDataSource,UICollectionViewDele
 extension SearchViewController : UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: collectionView.frame.size.width/2, height: collectionView.frame.size.height/5)
+        return CGSize(width: collectionView.frame.size.width, height: 60)
     }
 }

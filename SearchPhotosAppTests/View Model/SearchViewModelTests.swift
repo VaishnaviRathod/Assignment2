@@ -2,14 +2,22 @@
 //  SearchPhotosAppTests.swift
 //  SearchPhotosAppTests
 //
-//  Created by Vaishnavi Rathod on 13/10/22.
+//  Created by Vaishnavi Rathod on 01/11/22.
 //
 
 import XCTest
 @testable import SearchPhotosApp
 
-class SearchPhotosAppTests: XCTestCase {
-
+class SearchViewModelTests: XCTestCase {
+    
+    var searchViewModel : SearchViewModel!
+    var mockServices : MockWebServices?
+    
+    override func setUp() {
+        searchViewModel = SearchViewModel(apiManager: APIManager())
+        mockServices = MockWebServices()
+    }
+    
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
     }
@@ -31,6 +39,14 @@ class SearchPhotosAppTests: XCTestCase {
         self.measure {
             // Put the code you want to measure the time of here.
         }
+    }
+    
+    func test_PhotoMockData_With_Valid_Returns_PhotoResponse() {
+    
+        mockServices?.getPhotosBySearch(responseType: .valid, completion: { result in
+            XCTAssertNotNil(result)
+            XCTAssertEqual(result?.status, 200)
+        })
     }
 
 }

@@ -2,11 +2,11 @@
 //  SearchResponse.swift
 //  SearchPhotosApp
 //
-//  Created by Vaishnavi Rathod on 14/10/22.
+//  Created by Vaishnavi Rathod on 02/11/22.
 //
 
 import Foundation
-
+// API Response model on search
 struct SearchResponse : Codable {
     let searchedData : [PhotosResponse]?
     let success : Bool?

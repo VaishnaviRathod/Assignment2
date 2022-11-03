@@ -2,11 +2,12 @@
 //  ImageManager.swift
 //  SearchPhotosApp
 //
-//  Created by Vaishnavi Rathod on 17/10/22.
+//  Created by Vaishnavi Rathod on 02/11/22.
 //
 
 import Foundation
 import UIKit
+import AVKit
 // Image downloader utility class. We are going to use the singleton instance to be able to download required images and store them into in-memory cache.
 final class ImageManager {
 
@@ -37,7 +38,7 @@ final class ImageManager {
                        placeholderImage: UIImage?) {
 
         guard let imageUrlString = imageUrlString else {
-            completionHandler(placeholderImage, true)
+            completionHandler(UIImage(named: "placeholder"), true)
             return
         }
 
@@ -45,7 +46,7 @@ final class ImageManager {
             completionHandler(image, true)
         } else {
             guard let url = URL(string: imageUrlString) else {
-                completionHandler(placeholderImage, false)
+                completionHandler(UIImage(named: "placeholder"), false)
                 return
             }
 
@@ -53,12 +54,10 @@ final class ImageManager {
                 return
             }
             
-            
-
             let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
 
                 guard let data = data else {
-                    return
+                       return
                 }
 
                 if let _ = error {
@@ -87,6 +86,35 @@ final class ImageManager {
             }
 
             task.resume()
+        }
+    }
+    
+    func createThumbnailOfVideoFromFileURL(videoURL: String, completionHandler: @escaping (UIImage?, Bool) -> Void, placeholderImage: UIImage?){
+        let asset = AVAsset(url: URL(string: videoURL)!)
+        let assetImgGenerate = AVAssetImageGenerator(asset: asset)
+        assetImgGenerate.appliesPreferredTrackTransform = true
+        let time = CMTimeMakeWithSeconds(Float64(1), preferredTimescale: 100)
+        do {
+            let img = try assetImgGenerate.copyCGImage(at: time, actualTime: nil)
+            let thumbnail = UIImage(cgImage: img)
+            self.serialQueueForImages.sync(flags: .barrier) {
+                self.cachedImages[videoURL] = thumbnail
+            }
+
+            _ = self.serialQueueForDataTasks.sync(flags: .barrier) {
+                self.imagesDownloadTasks.removeValue(forKey: videoURL)
+            }
+            
+            DispatchQueue.main.async {
+                completionHandler(thumbnail, true)
+            }
+            
+           // return thumbnail
+        } catch {
+            DispatchQueue.main.async {
+                let placeholderImage = UIImage(named: "placeholder")
+                completionHandler(placeholderImage, false)
+            }
         }
     }
 

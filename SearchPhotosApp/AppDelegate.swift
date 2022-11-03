@@ -2,7 +2,7 @@
 //  AppDelegate.swift
 //  SearchPhotosApp
 //
-//  Created by Vaishnavi Rathod on 13/10/22.
+//  Created by Vaishnavi Rathod on 01/11/22.
 //
 
 import UIKit

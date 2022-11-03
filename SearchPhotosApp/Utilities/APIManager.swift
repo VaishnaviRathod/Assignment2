@@ -2,7 +2,7 @@
 //  APIManager.swift
 //  SearchPhotosApp
 //
-//  Created by Vaishnavi Rathod on 14/10/22.
+//  Created by Vaishnavi Rathod on 01/11/22.
 //
 
 import Foundation
@@ -54,26 +54,5 @@ class APIManager {
             }
             
         }.resume()
-        
-        
-//        guard let url = URL(string: "https://api.imgur.com/3/gallery/search/?q=dogs"),
-//            let payload = "{\"Authorization\": \"4442d2bb442f675\"}".data(using: .utf8) else
-//        {
-//            return
-//        }
-//
-//        var request = URLRequest(url: url)
-//        request.httpMethod = "GET"
-//        request.addValue("Client-ID 4442d2bb442f675", forHTTPHeaderField: "Authorization")
-//        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-//
-//        URLSession.shared.dataTask(with: request) { (data, response, error) in
-//            guard error == nil else { print(error!.localizedDescription); return }
-//            guard let data = data else { print("Empty data"); return }
-//
-//            if let str = String(data: data, encoding: .utf8) {
-//                print(str)
-//            }
-//        }.resume()
     }
 }

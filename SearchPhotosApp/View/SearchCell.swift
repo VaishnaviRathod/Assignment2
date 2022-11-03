@@ -1,8 +1,8 @@
 //
-//  PhotosCell.swift
-//  FlickrMVVMDemo
+//  ViewController.swift
+//  SearchPhotosApp
 //
-//  Created by Gourav on 03/03/22.
+//  Created by Vaishnavi Rathod on 01/11/22.
 //
 
 import UIKit
@@ -13,22 +13,6 @@ class SearchCell: UICollectionViewCell {
 
     var imagesViewModel: ImagesViewModel? {
         didSet {
-          // let activityIndicator: UIActivityIndicatorView =  UIActivityIndicatorView.init(style: .large)
-            
-  //          let searchCellViewModel = SearchCellViewModel(images: Images)
-           
- //           let url = photoCellViewModel.url
-//            imageViewPhoto.addSubview(activityIndicator)
-//            activityIndicator.startAnimating()
-//            activityIndicator.frame = self.bounds
- 
-
-//            ImageDownloadManager.shared.downloadImage(with: url, completionHandler: { (image, cached) in
-//              //  activityIndicator.stopAnimating()
-//              //  activityIndicator.removeFromSuperview()
-//                self.imageViewPhoto.image = image
-//
-//            }, placeholderImage: UIImage(named: "placeholder"))
         }
     }
     
@@ -37,6 +21,6 @@ class SearchCell: UICollectionViewCell {
     }
     
     override func prepareForReuse() {
-        //imageViewPhoto.image = #imageLiteral(resourceName: "placeHolder")
+        
     }
 }
