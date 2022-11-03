@@ -29,6 +29,8 @@ class SearchViewController: UIViewController {
         
         searchController.searchBar.compatibleSearchTextField.backgroundColor = .white
         searchController.searchBar.tintColor = .white
+        
+        
     }
     
    
@@ -40,7 +42,7 @@ class SearchViewController: UIViewController {
         navigationItem.searchController = searchController
         definesPresentationContext = true
     }
-    
+    /// Handling Error
     func handleApiErrorResponse() {
         photosViewModel.bindAPIErrorResponse = { [weak self] in
             DispatchQueue.main.async {
